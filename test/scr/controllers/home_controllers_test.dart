@@ -15,8 +15,19 @@ main() {
               userId: 1, id: 1, title: 'delectus aut autem', completed: false)
         ]);
 
+    expect(homeController.state, HomeState.start);
+
     await homeController.start();
+    expect(homeController.state, HomeState.success);
     final todos = homeController.todos;
     expect(todos.isNotEmpty, true);
+  });
+  test('deve modificar o estado para error se a requisição falhar', () async {
+    when(() => todoRepository.fetchTodos()).thenThrow(Exception());
+
+    expect(homeController.state, HomeState.start);
+
+    await homeController.start();
+    expect(homeController.state, HomeState.error);
   });
 }
